@@ -42,3 +42,19 @@ micronaut {
         annotations("chpro.daikin.proexp.*")
     }
 }
+
+// https://github.com/micronaut-projects/micronaut-gradle-plugin/issues/214
+dockerBuild {
+  inputDir = file("${buildDir}/docker/main")
+}
+
+
+task fixIssue214(type: Copy){
+    from ('Dockerfile')
+    into "${buildDir}/docker/main"
+}
+
+dockerBuild.dependsOn fixIssue214
+
+dockerBuild.dockerFile.set(file("${buildDir}/docker/main/Dockerfile"))
+// ^^^

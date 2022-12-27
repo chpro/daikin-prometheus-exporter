@@ -57,8 +57,8 @@ daikin:
           uri: aircon/get_sensor_info
           var: htemp
           type: gauge
-          name: daikin_temperature_indoor_celsius
-          help: Unit temperature which represents indoor temperature
+          name: daikin_temperature_unit_celsius
+          help: Unit temperature
           unit: celsius
         -
           uri: aircon/get_sensor_info

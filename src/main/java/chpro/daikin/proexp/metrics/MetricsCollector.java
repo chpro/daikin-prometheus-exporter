@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class MetricsCollector extends Collector {
 
             Map<String, RawData> data = getData(host);
 
-            samples.addAll(metrics.getMetrics().stream().map(metric -> createFamilySample(metric, data)).toList());
+            samples.addAll(metrics.getMetrics().stream().map(metric -> createFamilySample(metric, data)).collect(Collectors.toList()));
         }
         return samples;
     }

@@ -1,14 +1,8 @@
 
 package chpro.daikin.proexp.metrics;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.net.InetAddress;
-import java.net.URLDecoder;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import chpro.daikin.api.client.ClientService;
-import chpro.daikin.api.client.data.BasicData;
 import chpro.daikin.api.client.data.RawData;
+import chpro.daikin.api.client.data.RawData.Field;
 import chpro.daikin.api.client.impl.DefaultClientService;
 import chpro.daikin.proexp.metrics.config.MetricConfig;
 import chpro.daikin.proexp.metrics.config.MetricConfig.Metric;
@@ -34,7 +28,7 @@ import jakarta.inject.Singleton;
 @Singleton
 public class MetricsCollector extends Collector {
 
-    private static final String URI_WEEK_POWER = "aircon/get_week_power";
+   
 
     private static final String LABEL_NAME_FOR_DEVICE = "device";
 
@@ -76,7 +70,7 @@ public class MetricsCollector extends Collector {
             data.put(DefaultClientService.URI_AIRCON_GET_SENSOR_INFO, clientService.getSensorInfo(inetAddress));
             data.put(DefaultClientService.URI_AIRCON_GET_CONTROL_INFO, clientService.getControlInfo(inetAddress));
             data.put(DefaultClientService.URI_AIRCON_GET_MONITORDATA, clientService.getMonitorData(inetAddress));
-            data.put(URI_WEEK_POWER, clientService.getData(inetAddress, URI_WEEK_POWER, RawData.class));
+            data.put(DefaultClientService.URI_AIRCON_GET_WEEK_POWER, clientService.getWeekPower(inetAddress));
         } catch (UnknownHostException e) {
             LOG.error("Was not able to get data", e);
         }
@@ -123,40 +117,20 @@ public class MetricsCollector extends Collector {
     }
 
     protected String getDeviceName(Map<String, RawData> data) {
-        try {
-            return URLDecoder.decode(data.get(DefaultClientService.URI_COMMON_BASIC_INFO).getValue(BasicData.NAME), StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            LOG.error("Was not able to get device name", e);
-            return null;
-        }
-    }
-    
-    protected String parseHexToString(String hex) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        for (int i = 0; i < hex.length(); i += 2) {
-          String str = hex.substring(i, i + 2);
-          int byteVal = Integer.parseInt(str, 16);
-          baos.write(byteVal);
-        } 
-        return new String(baos.toByteArray(), Charset.forName("UTF-8"));
+            return data.get(DefaultClientService.URI_COMMON_BASIC_INFO).getDecodedValue(Field.NAME);
     }
 
     protected double getValue(Metric metricConfig, Map<String, RawData> data) {
         RawData rawData = data.get(metricConfig.getUri());
-        String value = rawData.getValue(metricConfig.getVar());
+        Field field = Field.getById(metricConfig.getVar());
+        String value = rawData.getRawValue(field);
         switch (value) {
         case "A":
             return 1.0d;
         case "B":
             return 2.0d;
         default:
-            if (DefaultClientService.URI_AIRCON_GET_MONITORDATA.equals(metricConfig.getUri())) {
-                // special cases with hex encoded numbers
-                if (value.length() >= 6) {
-                    return BigDecimal.valueOf(Double.parseDouble(parseHexToString(value))).divide(BigDecimal.TEN).doubleValue();
-                }
-            }
-            return BigDecimal.valueOf(Double.parseDouble(value)).doubleValue();
+            return rawData.getNumberValue(field).doubleValue();
         }
 
     }

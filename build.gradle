@@ -18,7 +18,7 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic")
     implementation("io.micronaut:micronaut-validation")
-    implementation("chpro.daikin.api:api:0.1")
+    implementation("chpro.daikin.api:daikin-api:0.1")
     implementation("io.prometheus:simpleclient:0.16.0")
     implementation("io.prometheus:simpleclient_servlet_common:0.16.0")
 

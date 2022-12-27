@@ -1,0 +1,131 @@
+micronaut:
+  application:
+    name: prometheusExporter
+netty:
+  default:
+    allocator:
+      max-order: 3
+daikin:
+  prometheus-exporter:
+    hosts:
+        - 192.168.1.77
+    label-device-name: true # defines if the label of device name should be added to each metric
+    metrics:
+#        -
+#          uri: aircon/get_sensor_info
+#          var: variable_name
+#          type: counter | gauge
+#          name: name of the metric (if unit is given the name needs also to be suffixed with it)
+#          help: a detailed description for the metric
+#          label-names:
+#            - name1
+#            - name2
+#          label-values:
+#            - value_for_name1
+#            - value_for_name22
+#          unit: iso units (grams, clesius ..)
+
+# get common basic info
+        -
+          uri: common/basic_info
+          var: pow
+          type: gauge
+          name: daikin_power_on
+          help: Indicator that power is on 1 or 0 off
+# get control info
+        -
+          uri: aircon/get_control_info
+          var: stemp
+          type: gauge
+          name: daikin_temperature_set_celsius
+          help: Indicator which temperature is set
+          unit: celsius
+        -
+          uri: aircon/get_control_info
+          var: f_rate
+          type: gauge
+          name: daikin_fan_rate
+          help: Daikin fan rate (1 auto, 2 quiet, 3-7 level 1-5). mapped A=1; B=2
+        -
+          uri: aircon/get_control_info
+          var: f_dir
+          type: gauge
+          name: daikin_fan_direction
+          help: Daikin fan direction (0 stopped, 1 vertical, 2 horizontal, 3 both)
+# get sensor ifno
+        -
+          uri: aircon/get_sensor_info
+          var: htemp
+          type: gauge
+          name: daikin_temperature_indoor_celsius
+          help: Unit temperature which represents indoor temperature
+          unit: celsius
+        -
+          uri: aircon/get_sensor_info
+          var: otemp
+          type: gauge
+          name: daikin_temperature_outdoor_celsius
+          help: Outdoor temperature
+        -
+          uri: aircon/get_sensor_info
+          var: cmpfreq
+          type: gauge
+          name: daikin_compressor_demand_percentage
+          help: Compressor demand (0-100)
+# get week power
+        -
+          uri: aircon/get_week_power
+          var: today_runtime
+          type: gauge
+          name: daikin_daily_runtime_minutes
+          help: Daily runtime in minutes
+          unit: minutes
+# get monitor data
+        -
+          uri: aircon/get_monitordata
+          var: fan
+          type: gauge
+          name: daikin_monitor_fan_speed_percentage
+          help: Unit fan speed (0-100)
+        -
+          uri: aircon/get_monitordata
+          var: rawrtmp
+          type: gauge
+          name: daikin_monitor_temperature_rawr_celsius
+          help: Room air temperature
+        -
+          uri: aircon/get_monitordata
+          var: trtmp
+          type: gauge
+          name: daikin_monitor_tr_temperature_celsius
+          help: tr tempurature
+        -
+          uri: aircon/get_monitordata
+          var: fangl
+          type: gauge
+          name: daikin_monitor_fangl
+          help: fangl
+        -
+          uri: aircon/get_monitordata
+          var: hetmp
+          type: gauge
+          name: daikin_monitor_temperature_heat_exchanger_celsius
+          help: Heat exchanger temperature
+        -
+          uri: aircon/get_monitordata
+          var: ResetCount
+          type: gauge
+          name: daikin_monitor_reset_count
+          help: Wifi adatptor resets
+        -
+          uri: aircon/get_monitordata
+          var: RouterDisconCnt
+          type: gauge
+          name: daikin_monitor_router_disconnect_count
+          help: Router disconnections
+        -
+          uri: aircon/get_monitordata
+          var: PollingErrCnt
+          type: gauge
+          name: daikin_monitor_polling_error_count
+          help: Polling errors

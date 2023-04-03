@@ -7,7 +7,14 @@ version = "0.1"
 group = "chpro.daikin.proexp"
 
 repositories {
-    mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = "https://maven.pkg.github.com/chpro/daikin-api-java"
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("PACKAGES_READ_TOKEN")
+        }
+    }
     mavenCentral()
 }
 
@@ -46,6 +53,7 @@ micronaut {
 // https://github.com/micronaut-projects/micronaut-gradle-plugin/issues/214
 dockerBuild {
   inputDir = file("${buildDir}/docker/main")
+  images = ["ghcr.io/chpro/${project.name}:${project.version}"]
 }
 
 

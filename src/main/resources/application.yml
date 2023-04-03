@@ -22,7 +22,7 @@ daikin:
 #            - name2
 #          label-values:
 #            - value_for_name1
-#            - value_for_name22
+#            - value_for_name2
 #          unit: iso units (grams, clesius ..)
 
 # get common basic info

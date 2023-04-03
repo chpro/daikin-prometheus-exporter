@@ -29,8 +29,6 @@ import jakarta.inject.Singleton;
 @Singleton
 public class MetricsCollector extends Collector {
 
-   
-
     private static final String LABEL_NAME_FOR_DEVICE = "device";
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricsCollector.class);
@@ -57,7 +55,7 @@ public class MetricsCollector extends Collector {
 
             Map<String, RawData> data = getData(host);
 
-            samples.addAll(metrics.getMetrics().stream().map(metric -> createFamilySample(metric, data)).collect(Collectors.toList()));
+            samples.addAll(metrics.getMetrics().stream().map(metric -> createFamilySample(metric, data)).filter(x -> x != null).collect(Collectors.toList()));
         }
         return samples;
     }
@@ -93,32 +91,36 @@ public class MetricsCollector extends Collector {
         }
 
         LOG.debug("Colllecting metric {}", metricConfig);
+        try {
+            Collector.Type type = Collector.Type.valueOf(metricConfig.getType().toUpperCase());
 
-        Collector.Type type = Collector.Type.valueOf(metricConfig.getType().toUpperCase());
+            double value = getValue(metricConfig, data);
 
-        double value = getValue(metricConfig, data);
+            switch (type) {
+            case GAUGE:
+            case COUNTER: {
+                List<Sample> samples = Collections.singletonList(new Sample(name, labelNames, labelValues, value));
+                MetricFamilySamples metric = new MetricFamilySamples(name, unit, type, help, samples);
+                return metric;
+            }
+            case GAUGE_HISTOGRAM:
+            case HISTOGRAM:
+            case SUMMARY:
+            case STATE_SET:
+            case INFO:
+            case UNKNOWN:
+            default:
+                throw new RuntimeException("Type not implemented yet " + type);
 
-        switch (type) {
-        case GAUGE:
-        case COUNTER: {
-            List<Sample> samples = Collections.singletonList(new Sample(name, labelNames, labelValues, value));
-            MetricFamilySamples metric = new MetricFamilySamples(name, unit, type, help, samples);
-            return metric;
-        }
-        case GAUGE_HISTOGRAM:
-        case HISTOGRAM:
-        case SUMMARY:
-        case STATE_SET:
-        case INFO:
-        case UNKNOWN:
-        default:
-            throw new RuntimeException("Type not implemented yet " + type);
-
+            }
+        } catch (Exception e) {
+            LOG.error("Could not create metric " + metricConfig.toString(), e);
+            return null;
         }
     }
 
     protected String getDeviceName(Map<String, RawData> data) {
-            return data.get(DefaultClientService.URI_COMMON_BASIC_INFO).getDecodedValue(Field.NAME);
+        return data.get(DefaultClientService.URI_COMMON_BASIC_INFO).getDecodedValue(Field.NAME);
     }
 
     protected double getValue(Metric metricConfig, Map<String, RawData> data) {

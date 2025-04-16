@@ -1,12 +1,13 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.7.9"
+    id("io.micronaut.application") version "4.5.2"
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
-version = "0.1"
+version = "0.2"
 group = "chpro.daikin.proexp"
 
 repositories {
+    mavenLocal()
     maven {
         name = "GitHubPackages"
         url = "https://maven.pkg.github.com/chpro/daikin-api-java"
@@ -24,8 +25,8 @@ dependencies {
     implementation("io.micronaut:micronaut-jackson-databind")
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic")
-    implementation("io.micronaut:micronaut-validation")
-    implementation("chpro.daikin.api:daikin-api:0.1")
+    
+    implementation("chpro.daikin.api:daikin-api:0.2")
     implementation("io.prometheus:simpleclient:0.16.0")
     implementation("io.prometheus:simpleclient_servlet_common:0.16.0")
 
@@ -36,8 +37,8 @@ application {
     mainClass.set("chpro.daikin.proexp.Application")
 }
 java {
-    sourceCompatibility = JavaVersion.toVersion("11")
-    targetCompatibility = JavaVersion.toVersion("11")
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
 }
 
 graalvmNative.toolchainDetection = false

@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /home/app
 COPY layers/libs /home/app/libs
 COPY layers/classes /home/app/classes

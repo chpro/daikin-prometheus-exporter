@@ -53,13 +53,3 @@ The name of the field returned by the endpoint which should be exposed via /metr
 ### label-*
 
 Static labels which should be added to the metric. Lists need to have same length
-
-## Micronaut 3.7.4 Documentation
-
-- [User Guide](https://docs.micronaut.io/3.7.4/guide/index.html)
-- [API Reference](https://docs.micronaut.io/3.7.4/api/index.html)
-- [Configuration Reference](https://docs.micronaut.io/3.7.4/guide/configurationreference.html)
-- [Micronaut Guides](https://guides.micronaut.io/index.html)
----
-
-- [Shadow Gradle Plugin](https://plugins.gradle.org/plugin/com.github.johnrengelman.shadow)

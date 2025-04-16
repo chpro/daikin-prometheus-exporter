@@ -111,21 +111,4 @@ daikin:
           type: gauge
           name: daikin_monitor_temperature_heat_exchanger_celsius
           help: Heat exchanger temperature
-        -
-          uri: aircon/get_monitordata
-          var: ResetCount
-          type: gauge
-          name: daikin_monitor_reset_count
-          help: Wifi adatptor resets
-        -
-          uri: aircon/get_monitordata
-          var: RouterDisconCnt
-          type: gauge
-          name: daikin_monitor_router_disconnect_count
-          help: Router disconnections
-        -
-          uri: aircon/get_monitordata
-          var: PollingErrCnt
-          type: gauge
-          name: daikin_monitor_polling_error_count
-          help: Polling errors
+

@@ -3,7 +3,7 @@ plugins {
     id("com.gradleup.shadow") version "8.3.6"
 }
 
-version = "0.2"
+version = "0.3"
 group = "chpro.daikin.proexp"
 
 repositories {
@@ -26,7 +26,7 @@ dependencies {
     implementation("jakarta.annotation:jakarta.annotation-api")
     runtimeOnly("ch.qos.logback:logback-classic")
     
-    implementation("chpro.daikin.api:daikin-api:0.2")
+    implementation("chpro.daikin.api:daikin-api:0.3")
     implementation("io.prometheus:simpleclient:0.16.0")
     implementation("io.prometheus:simpleclient_servlet_common:0.16.0")
 
